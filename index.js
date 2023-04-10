@@ -11,11 +11,28 @@ app.get('/', (req, res) => {
 app.get('/fare', (req, res) => {
   const start = req.query.start;
   const end = req.query.end;
-  const url = `http://3.110.128.225:3000/fare?start=${start}&end=${end}`;
-  
+  const url = `http://localhost:3000/fare?start=${start}&end=${end}`;
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+    const fareRegex = /fare=(\d+)/;
+    const fareMatch = data.match(fareRegex);
+    if (fareMatch) {
+      const fare = fareMatch[1];
+      console.log(`The fare is ${fare} rupiah`);
+    } else {
+      console.log('Unable to retrieve fare');
+    }
+  })
+  .catch(error => console.error(error));
+ 
   request(url, { json: true }, (err, response, body) => {
-    if (err) { return console.log(err); }
+    if (err) { return console.log(err); 
+    }
+    
     res.send(body);
+   
+    
   });
 });
 
